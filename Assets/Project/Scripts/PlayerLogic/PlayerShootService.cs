@@ -65,10 +65,19 @@ namespace Project.PlayerLogic
             {
                 Vector3 shootDirection = (hit.point - shootPos).normalized;
 
+                Vector3 directionToShootPoint = (hit.point - shootPos).normalized;
+
+                Vector3 cameraForward = Vector3.ProjectOnPlane(_camera.transform.forward,Vector3.up);   
+                directionToShootPoint = Vector3.ProjectOnPlane(directionToShootPoint,Vector3.up);   
+
+                var angle = Vector3.Angle(directionToShootPoint, cameraForward);
+
+                if(angle > 90) return;
+                
                 if (Physics.SphereCast(shootPos, 0.5f,shootDirection ,out hit, 10))
                 {
-                    Debug.DrawRay(shootPos, screenRay.direction, Color.black, 1);
-
+                    //Debug.DrawRay(shootPos, screenRay.direction, Color.black, 1);
+                    
                     var bulletSetupContext = new BulletSetupContext();
 
                     bulletSetupContext.Direction = shootDirection;
@@ -99,13 +108,18 @@ namespace Project.PlayerLogic
             {
                 EnemyHitboxType hitboxType = enemyHitbox.HitboxType;
 
-                Enemy hitboxOwner = enemyHitbox.Owner;
+                Enemy enemy = enemyHitbox.Owner;
 
-                var damage = _config.EnemyHitboxDamage.GetMultipliedDamage(30, hitboxType);
+                var damage = _config.EnemyHitboxDamage.GetMultipliedDamage(50, hitboxType);
 
-                Debug.Log($"{hitboxType} {damage}");
+                //Debug.Log($"{hitboxType} {damage}");
 
-                hitboxOwner.ApplyDamage(damage);
+                var enemyHitContext = new EnemyHitContext();
+                enemyHitContext.Hitbox = enemyHitbox;
+                enemyHitContext.HitPoint = context.Collider.ClosestPoint(context.Bullet.transform.position);
+                enemyHitContext.Damage = damage;
+                
+                enemy.ApplyDamage(enemyHitContext);
 
                 _bulletsPool.ReturnToPool(context.Bullet);
             }
@@ -115,4 +129,12 @@ namespace Project.PlayerLogic
             }
         }
     }
+
+    public struct EnemyHitContext
+    {
+        public EnemyHitbox Hitbox;
+        public Vector3 HitPoint;
+        public int Damage;
+    }
+    
 }

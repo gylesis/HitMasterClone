@@ -14,15 +14,6 @@ namespace Project.EnemyLogic
             Freeze();
         }
 
-        public void Force(Vector3 direction)
-        {
-            foreach (Rigidbody rigidbody in _rigidbodies)
-            {
-                rigidbody.isKinematic = false;
-                rigidbody.velocity += direction;
-            }
-        }
-        
         public void Activate()
         {
             _animator.enabled = false;

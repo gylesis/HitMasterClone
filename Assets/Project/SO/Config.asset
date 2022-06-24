@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Config
   m_EditorClassIdentifier: 
   _initBulletsAmount: 50
-  _bulletSpeedModifier: 1000
+  _bulletSpeedModifier: 1500
   _botHealth: 100
   _enemiesHitboxDamage:
-    _headDamage: 0.8
+    _headDamage: 1
     _chestDamage: 0.6
-    _armDamage: 0.3
+    _armDamage: 0.1
     _legDamage: 0.2
-  _shootCooldown: 0.3
+  _shootCooldown: 0.2

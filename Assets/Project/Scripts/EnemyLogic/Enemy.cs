@@ -1,4 +1,5 @@
-﻿using UniRx;
+﻿using Project.PlayerLogic;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -9,10 +10,13 @@ namespace Project.EnemyLogic
         [SerializeField] private EnemyHitbox[] _hitboxes;
         [SerializeField] private EnemyHealthView _healthView;
         [SerializeField] private EnemyRagdoll _ragdoll;
-
+        public EnemyHitbox LastHitbox => _lastHitbox;
+        public Vector3 LastHitPoint => _lastHitPoint;
         public EnemyRagdoll Ragdoll => _ragdoll;
-
+        
         private HealthData _healthData;
+        private EnemyHitbox _lastHitbox;
+        private Vector3 _lastHitPoint;
 
         private void Reset()
         {
@@ -37,9 +41,12 @@ namespace Project.EnemyLogic
         }
         
 
-        public void ApplyDamage(int damage)
+        public void ApplyDamage(EnemyHitContext context)
         {
-            _healthData.ApplyDamage(damage);
+            _lastHitbox = context.Hitbox;
+            _lastHitPoint = context.HitPoint;
+            
+            _healthData.ApplyDamage(context.Damage);
         }
     }
 }

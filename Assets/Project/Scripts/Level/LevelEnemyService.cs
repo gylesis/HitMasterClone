@@ -21,7 +21,7 @@ namespace Project.Level
         {
             _level = level;
 
-            levelEnemySpawner.Spawned.Subscribe((OnEnemySpawned));
+            levelEnemySpawner.Spawned.Subscribe((OnEnemySpawned)).AddTo(_compositeDisposable);
         }
 
         private void OnEnemySpawned(Enemy enemy)
@@ -42,8 +42,12 @@ namespace Project.Level
 
             var vector3 = new Vector3(Random.value,-Random.value,Random.value);
 
-            enemy.Ragdoll.Force(vector3 * 5);
+            Vector3 enemyLastHitPoint = enemy.LastHitPoint;
+            Vector3 lastHitboxPos = enemy.LastHitbox.transform.position;
+
+            enemy.LastHitbox.GetComponent<Rigidbody>().velocity += (enemyLastHitPoint - lastHitboxPos).normalized * 20;
             
+           // enemy.Ragdoll.Force(vector3 * 5);
             
             EnemyDied.OnNext(enemyDeathContext);
         }
